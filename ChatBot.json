@@ -1,0 +1,325 @@
+{
+  "name": "ChatBot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatbot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -80
+      ],
+      "id": "ac90d7e9-04bb-43bf-948a-da22ff72f958",
+      "name": "Webhook",
+      "webhookId": "d5e32fb0-ca9a-4613-9b8d-e3d14e8b4437"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"reply\": {{ JSON.stringify($json.output) }}\n}\n\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        260,
+        -80
+      ],
+      "id": "e23e65a8-20fc-4ac6-af1c-733d4fb5e8b5",
+      "name": "Respond to Webhook",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_P0IP2fcikEbgRVJ6bdwJSMQ7",
+          "mode": "list",
+          "cachedResultName": "Camarero Virtual"
+        },
+        "prompt": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -80,
+        -80
+      ],
+      "id": "44539e4e-3c60-4785-bec9-c957209dce92",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "nQCssqg1dmuComEA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Consulta el menú completo del restaurante Bar La Esquina con todos los platos, precios y descripciones disponibles. Usa esta herramienta para obtener información actualizada sobre la carta del restaurante.",
+        "documentId": {
+          "__rl": true,
+          "value": "1Iz0NR7XL3O5B-paDKRC_qUgorRT1mBYscgXGcu0eyZE",
+          "mode": "list",
+          "cachedResultName": "Camarero_Virtual",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Iz0NR7XL3O5B-paDKRC_qUgorRT1mBYscgXGcu0eyZE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "menu",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Iz0NR7XL3O5B-paDKRC_qUgorRT1mBYscgXGcu0eyZE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -60,
+        160
+      ],
+      "id": "f4e15812-4e11-4fed-be07-c32b05ae7b76",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7Qo4sRUh7ABsEZUj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1319711035",
+        "text": "=\n\n🧾 Pedido confirmado:\n\nMesa: {{ $json.mesa }}\n\n{{ $json.pedido }}\n\nTotal a pagar : {{ $json.total }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        -200
+      ],
+      "id": "48f178de-fda8-46ab-a4ce-3617ecfb4aab",
+      "name": "Telegram",
+      "webhookId": "b985db29-e0eb-49fb-9daf-0b0f21eaeaf6",
+      "credentials": {
+        "telegramApi": {
+          "id": "7NnRSg2Kim2TMQi6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.headers.origin }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        100,
+        180
+      ],
+      "id": "cb172863-f25a-4952-bec8-b975d2993c80",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d30cbf07-6a9a-4812-9053-a494d64e987c",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "**Total a pagar:",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "d5ba600b-4077-4a15-98e5-98839660563c",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "¿Confirmas el pedido? ✅",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "bdc3f432-b0dc-42ec-a8b2-27e30dd4420b",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "¿Confirmas la actualización del pedido? ✅",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "c06083d5-5032-4bb2-b20d-686e71727641",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "✅",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        -80
+      ],
+      "id": "7a7e37d1-0121-4080-a9bf-d09b2ea16d94",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        740,
+        120
+      ],
+      "id": "628ac796-198c-48f7-8c8d-b7e60a3f0996",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const texto = $json.output;\n\n// Saca todas las líneas que empiezan por \"- \" y NO contienen \"Total\"\nconst lineas = texto.split('\\n').map(l => l.trim());\nconst productos = lineas\n  .filter(l => l.startsWith('- ') && !l.toLowerCase().includes('total'))\n  .join('\\n'); // deja cada producto en una línea con el -\n\n// Saca el total solo el número\nconst totalMatch = texto.match(/\\*\\*Total a pagar: ([\\d\\.,]+ €)\\*\\*/);\nconst total = totalMatch ? totalMatch[1] : \"\";\n\n// Devuelve ambos datos\nreturn {\n  pedido: productos,\n  total: total,\n  mesa: $('Webhook').first().json.body.mesa\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -100
+      ],
+      "id": "0491ec3b-11f5-49c4-94f6-bb20ffc72d3a",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "ai_tool": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8ccc7136-ad5e-4aea-8ac7-6ef481d2ec47",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92168905f17623c499b1be85d8ba8452c418d9e7736b5d6b66ddb9ce1ce8d5a1"
+  },
+  "id": "afVXf3Zx23wbXvbL",
+  "tags": []
+}
