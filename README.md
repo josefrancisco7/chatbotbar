@@ -65,3 +65,6 @@ Chat web interactivo para pedidos en mesa en bares, conectado con IA y menú din
 - [ ] **Modificar el js para poner la url del dominio de n8n** 
 
 ---
+=======
+# Chatbotbar
+>>>>>>> 9afef45805e2b22d16739b21678702e415b81f4f
