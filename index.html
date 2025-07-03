@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Chatbot tipo WhatsApp</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chatbot tipo WhatsApp</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
@@ -16,11 +16,17 @@
     <main id="chat" class="chat-window"></main>
 
     <form id="chat-form" class="input-area" autocomplete="off">
-      <input type="text" id="user-input" placeholder="Escribe un mensaje" required />
-      <button type="submit" aria-label="Enviar">
+      <input type="text" id="user-input" placeholder="Escribe un mensaje" />
+      <button type="submit" aria-label="Enviar texto">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
           <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
         </svg>
+      </button>
+      <button id="audio-btn" type="button" aria-label="Grabar audio">
+       <img id="mic-icon" src="img/forma-de-microfono-negro.png" width="24" />
+
+
+
       </button>
     </form>
   </div>

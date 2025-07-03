@@ -11,8 +11,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -380,
-        -80
+        -580,
+        -120
       ],
       "id": "ac90d7e9-04bb-43bf-948a-da22ff72f958",
       "name": "Webhook",
@@ -44,14 +44,14 @@
           "cachedResultName": "Camarero Virtual"
         },
         "prompt": "define",
-        "text": "={{ $json.body.message }}",
+        "text": "={{ $json.body?.message || $json.text }}\n\n",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        -80,
-        -80
+        -40,
+        -100
       ],
       "id": "44539e4e-3c60-4785-bec9-c957209dce92",
       "name": "OpenAI",
@@ -106,8 +106,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1280,
-        -200
+        980,
+        -100
       ],
       "id": "48f178de-fda8-46ab-a4ce-3617ecfb4aab",
       "name": "Telegram",
@@ -217,6 +217,61 @@
       ],
       "id": "0491ec3b-11f5-49c4-94f6-bb20ffc72d3a",
       "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d30cbf07-6a9a-4812-9053-a494d64e987c",
+              "leftValue": "={{ $binary.audio.fileName }}\n\n\n",
+              "rightValue": "audio.webm",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -360,
+        -120
+      ],
+      "id": "bdc8d4a0-cfd0-4663-9434-b34639f206b0",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "audio",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -120,
+        -360
+      ],
+      "id": "cdb4c22d-cd8d-4049-a56a-4dc78de324c3",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "nQCssqg1dmuComEA",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -225,7 +280,7 @@
       "main": [
         [
           {
-            "node": "OpenAI",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -309,13 +364,42 @@
           }
         ]
       ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "8ccc7136-ad5e-4aea-8ac7-6ef481d2ec47",
+  "versionId": "5054f8c5-371e-45de-afde-091dfc9f3940",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "92168905f17623c499b1be85d8ba8452c418d9e7736b5d6b66ddb9ce1ce8d5a1"

@@ -1,4 +1,4 @@
-# Bar La Esquina - Chatbot Web + n8n + OpenAI + Google Sheets
+ # Bar La Esquina - Chatbot Web + n8n + OpenAI + Google Sheets
 
 Chat web interactivo para pedidos en mesa en bares, conectado con IA y menú dinámico en Google Sheets, desplegado con n8n.
 
