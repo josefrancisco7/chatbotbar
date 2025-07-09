@@ -174,7 +174,7 @@ async function sendAudioToBackend(blob) {
   formData.append("mesa", mesa);
 
   try {
-    const response = await fetch("http://192.168.1.42:5678/webhook/chatbot", {
+    const response = await fetch("http://flybots.agency:5678/webhook/chatbot", {
       method: "POST",
       body: formData
     });
