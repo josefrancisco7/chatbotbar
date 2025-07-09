@@ -27,7 +27,7 @@ form.addEventListener("submit", async (e) => {
   const bodyToSend = { message: userText, mesa };
 
   try {
-    const response = await fetch("http://192.168.1.42:5678/webhook/chatbot", {
+    const response = await fetch("http://flybots.agency:5678/webhook/chatbot", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(bodyToSend)
